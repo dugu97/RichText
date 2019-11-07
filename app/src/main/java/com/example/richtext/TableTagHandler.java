@@ -1,42 +1,31 @@
 package com.example.richtext;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.Html;
-import android.text.Layout;
-import android.text.Layout.Alignment;
 import android.text.Spannable;
 import android.text.Spanned;
-import android.text.style.AlignmentSpan;
-import android.text.style.BackgroundColorSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StrikethroughSpan;
+import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
-import android.text.style.UnderlineSpan;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
+import androidx.annotation.NonNull;
+
 import org.xml.sax.XMLReader;
-import org.xml.sax.ext.EntityResolver2;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
+public class TableTagHandler implements Html.TagHandler {
 
-public class MyTagHandler implements Html.TagHandler {
-
-    private static String TAG = "MyTagHandler";
+    private static String TAG = "TableTagHandler";
     private Context context;
 
-
-    //    final HashMap<String, String> attributes = new HashMap<String, String>();
-
     private static class TdTag {}
+
+    public TableTagHandler(Context context) {
+        this.context = context;
+    }
 
     @Override
     public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
@@ -50,7 +39,7 @@ public class MyTagHandler implements Html.TagHandler {
         }else if (lowerTag.equals("tr")){
             //此处只处理tr的结束标签
             if (!opening){
-                output.append('\n');
+                output.append("\n");
             }
         }else if (lowerTag.equals("td")){
             if (opening){
@@ -68,7 +57,6 @@ public class MyTagHandler implements Html.TagHandler {
 
     private void endTdTag(String tag, Editable output, XMLReader xmlReader) {
         int len = output.length();
-        output.append("|");
         //得到位于最后的TdTag
         Object obj = getLast(output, TdTag.class);
         if (obj != null) {
@@ -84,15 +72,7 @@ public class MyTagHandler implements Html.TagHandler {
     }
 
     private void endTableTag(String tag, Editable output, XMLReader xmlReader) {
-//        int len = output.length();
-//        Object obj = getLast(output, ForegroundColorSpan);
-//        if (obj != null) {
-//            setSpanFromMark(text, obj, repl);
-//        }
-//        //这里可以将里面的内容修改成任意你想要的格式，大小，加粗，以及一系列操作
-//        output.setSpan(new BackgroundColorSpan(Color.parseColor(color)), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//        Log.d(TAG, "endIndex " + endIndex);
-//        output.setSpan(new ForegroundColorSpan(Color.parseColor("#222222")), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        output.append("\n");
     }
 
     private static <T> T getLast(Spanned text, Class<T> kind) {
